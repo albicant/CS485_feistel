@@ -57,7 +57,7 @@ def printKeys(keys):
     # add asertions that keys have size of 16x12
     for key in keys:
         for b in key:
-            print(b, end = ' ')
+            print("0x" + b, end = ' ')
         print()
 
 
@@ -66,12 +66,12 @@ def printKeys(keys):
 
 
 
-original_key = int(0xabcdef0123456789)
-# new_key = shiftBitLeft(original_key)
-key_array = createKeyArray(original_key)
-# print(len(key_array))
+# original_key = int(0xabcdef0123456789)
+# # new_key = shiftBitLeft(original_key)
+# key_array = createKeyArray(original_key)
+# # print(len(key_array))
 
-print(hex(original_key))
+# print(hex(original_key))
 
-keys = generateKeys(original_key)
-printKeys(keys)
+# keys = generateKeys(original_key)
+# printKeys(keys)
