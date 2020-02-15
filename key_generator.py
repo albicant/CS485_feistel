@@ -28,7 +28,7 @@ def breakHexIntoChunks(block):
     block_list = []
     i = len(block)
     while(i > 0):
-        byte = "0x" + block[i - 2: i]
+        byte = block[i - 2: i]
         block_list.append(byte)
         i -= 2
     return block_list
@@ -42,15 +42,23 @@ def generateKeys(key):
         i = x % 64
         byte_arr = breakHexIntoChunks(row_keys[i])
         if(x % 12 == 0):
-            keys.append("")
+            keys.append([])
             counter += 1
 
-        b = x % 8
-        keys[counter] = keys[counter] + byte_arr[b] + " "
+        b = x % 4
+        if counter % 2 == 1:
+            b += 4
+        keys[counter].append(byte_arr[b])
         x += 1
     
     return keys
         
+def printKeys(keys):
+    # add asertions that keys have size of 16x12
+    for key in keys:
+        for b in key:
+            print(b, end = ' ')
+        print()
 
 
 
@@ -60,26 +68,10 @@ def generateKeys(key):
 
 original_key = int(0xabcdef0123456789)
 # new_key = shiftBitLeft(original_key)
-# key_array = createKeyArray(original_key)
+key_array = createKeyArray(original_key)
 # print(len(key_array))
 
 print(hex(original_key))
 
 keys = generateKeys(original_key)
-for key in keys:
-    str1 = key
-    print(str1)
-# print(hex(new_key))
-# print(hex(key_array[2]))
-
-# test_key = key_array[63]
-# print(hex(test_key))
-
-# block = int(0xabcdef01234567890)
-# block = breakHexIntoChunks(block)
-# print(len(block))
-# str1 = ""
-# for i in range(0, len(block)):
-#     str1 += block[i] + " "
-# print(str1)
-# print("BreakHexIntoChunks:" + block)
+printKeys(keys)
