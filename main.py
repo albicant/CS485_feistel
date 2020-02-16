@@ -106,3 +106,46 @@ for i in range(0, 16):
     print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
     print("End of Round: " + str(i))
     print()
+
+y = [r[2], r[3], r[0], r[1]]
+y_hex = []
+for yi in y:
+    y_hex.append(int(format(yi, "04x")[:2], 16))
+    y_hex.append(int(format(yi, "04x")[2:], 16))
+
+c = whitening(y_hex, original_key)
+print("\n\nCiphertext: 0x", end = '')
+for ci in c:
+    print(format(ci, "04x"), end = '')
+print()
+
+print("DECRYPTION\n")
+print("Ciphertext: 0x", end = '')
+for ci in c:
+    print(format(ci, "04x"), end = '')
+print()
+
+c_hex = []
+for ci in c:
+    c_hex.append(int(format(ci, "04x")[:2], 16))
+    c_hex.append(int(format(ci, "04x")[2:], 16))
+
+r = whitening(c_hex, original_key)
+for i in range(15, -1, -1):
+    print("Beginning of Round: " + str(i))
+    r = round_function(r, i)
+    print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
+    print("End of Round: " + str(i))
+    print()
+
+p = [r[2], r[3], r[0], r[1]]
+p_hex = []
+for pi in p:
+    p_hex.append(int(format(pi, "04x")[:2], 16))
+    p_hex.append(int(format(pi, "04x")[2:], 16))
+
+p = whitening(p_hex, original_key)
+print("\n\nPlaintext: 0x", end = '')
+for pi in p:
+    print(format(pi, "04x"), end = '')
+print()
