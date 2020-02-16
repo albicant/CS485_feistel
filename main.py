@@ -17,14 +17,15 @@ ftable = [0xa3,0xd7,0x09,0x83,0xf8,0x48,0xf6,0xf4,0xb3, 0x21,0x15,0x78,0x99,0xb1
     0x08,0x77,0x11,0xbe,0x92,0x4f,0x24,0xc5,0x32,0x36,0x9d,0xcf,0xf3,0xa6,0xbb,0xac,
     0x5e,0x6c,0xa9,0x13,0x57,0x25,0xb5,0xe3,0xbd,0xa8,0x3a,0x01,0x05,0x59,0x2a,0x46]
 
-const_2_16 = pow(2, 16)
+const_2_16 = 2**16
 original_key = int(0xabcdef0123456789)
 keys = KG.generateKeys(original_key)
 
 def printHex(he):
     h_str = "0x"
     for h in he:
-        h_str += hex(h)[2:]
+        h_str += format(h, "02x")
+        # h_str += hex(h)[2:]
     print(h_str)
 
 def stringToHex(str):
@@ -35,24 +36,27 @@ def stringToHex(str):
 
 def whitening(word, key):
     r = []
-    key = hex(key)[2:]
+    # key = hex(key)[2:]
+    key = format(key, "016x")
     for i in range(0, 4):
         j = i * 2
-        sw = hex(word[j])[2:] + hex(word[j+1])[2:]
+        # sw = hex(word[j])[2:] + hex(word[j+1])[2:]
+        sw = format(word[j], "02x") + format(word[j+1], "02x")
         sk = key[4 * i:4 * i + 4]
         w = int(sw, 16) ^ int(sk, 16)
         r.append(w)
     return r
 
 def g_function(r, k0, k1, k2, k3):
-    g1 = int(hex(r)[2:4], 16)
-    g2 = int(hex(r)[4:6], 16)
+    r = format(r, '04x')
+    g1 = int(r[:2], 16)
+    g2 = int(r[2:4], 16)
     g3 = int(ftable[g2 ^ k0]) ^ g1
     g4 = int(ftable[g3 ^ k1]) ^ g2
     g5 = int(ftable[g4 ^ k2]) ^ g3
     g6 = int(ftable[g5 ^ k3]) ^ g4
     print("g1: " + hex(g1) + ' g2: ' + hex(g2) + ' g3: ' + hex(g3) + ' g4: ' + hex(g4) + ' g5: ' + hex(g5) + ' g6: ' + hex(g6))
-    return int(hex(g5)[2:] + hex(g6)[2:], 16)
+    return int(format(g5, '02x') + format(g6, '02x'), 16)
 
 def f_function(r0, r1, round):
     k = keys[round]
@@ -66,8 +70,8 @@ def f_function(r0, r1, round):
     t1 = g_function(r1, k[4], k[5], k[6], k[7])
     print("t0: " + hex(t0) + " t1: " + hex(t1))
 
-    k89 = int(hex(k[8])[2:] + hex(k[9])[2:], 16)
-    kab = int(hex(k[10])[2:] + hex(k[11])[2:], 16)
+    k89 = int(format(k[8], '02x') + format(k[9], '02x'), 16)
+    kab = int(format(k[10], '02x') + format(k[11], '02x'), 16)
     f0 = (t0 + 2 * t1 + k89) % const_2_16
     f1 = (2 * t0 + t1 + kab) % const_2_16
     return [f0, f1]
@@ -75,6 +79,7 @@ def f_function(r0, r1, round):
 def round_function(r, round):
     f = f_function(r[0], r[1], round)
     print("f0: " + hex(f[0]) + " f1: " + hex(f[1]))
+    # print("r0: " + hex(r[0]) + " r1: " + hex(r[1]) + " r2: " + hex(r[2]) + " r3: " + hex(r[3]))
 
     new_r0 = r[2] ^ f[0]
     new_r1 = r[3] ^ f[1]
@@ -94,6 +99,10 @@ printHex(pt_hex)
 print("\nWhitening:", end = ' ')
 r = whitening(pt_hex, original_key)
 print(r)
-print("\n\n\n Encryption: round 0:")
-r = round_function(r, 0)
-print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
+print("\n\n\nEncryption:")
+for i in range(0, 16):
+    print("Beginning of Round: " + str(i))
+    r = round_function(r, i)
+    print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
+    print("End of Round: " + str(i))
+    print()
