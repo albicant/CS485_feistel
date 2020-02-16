@@ -48,7 +48,7 @@ def generateKeys(key):
         b = x % 4
         if counter % 2 == 1:
             b += 4
-        keys[counter].append(byte_arr[b])
+        keys[counter].append(int(byte_arr[b], 16))
         x += 1
     
     return keys
@@ -57,7 +57,7 @@ def printKeys(keys):
     # add asertions that keys have size of 16x12
     for key in keys:
         for b in key:
-            print("0x" + b, end = ' ')
+            print(hex(b), end = ' ')
         print()
 
 
