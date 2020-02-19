@@ -1,3 +1,5 @@
+# Gennadii Sytov - CS485 - Winter2020 - Project 1 "PSU_CRYPT"
+
 class PSUCrypt:
 
     const_2_16 = 2**16
@@ -24,11 +26,8 @@ class PSUCrypt:
 
     def whitening(self, word, key):
         r = []
-        print(word)
-        print(key)
 
         key = format(key, "016x")
-        print(key)
         for i in range(0, 4):
             j = i * 4
 
@@ -46,20 +45,20 @@ class PSUCrypt:
         g4 = int(self.ftable[g3 ^ k1]) ^ g2
         g5 = int(self.ftable[g4 ^ k2]) ^ g3
         g6 = int(self.ftable[g5 ^ k3]) ^ g4
-        print("g1: " + hex(g1) + ' g2: ' + hex(g2) + ' g3: ' + hex(g3) + ' g4: ' + hex(g4) + ' g5: ' + hex(g5) + ' g6: ' + hex(g6))
+        # print("g1: " + hex(g1) + ' g2: ' + hex(g2) + ' g3: ' + hex(g3) + ' g4: ' + hex(g4) + ' g5: ' + hex(g5) + ' g6: ' + hex(g6))
         return int(format(g5, '02x') + format(g6, '02x'), 16)
 
     def f_function(self, r0, r1, round):
         k = self.keys[round]
 
-        print("Keys: ", end = ' ')
-        for ki in k:
-            print(hex(ki), end = ' ')
-        print()
+        # print("Keys: ", end = ' ')
+        # for ki in k:
+        #     print(hex(ki), end = ' ')
+        # print()
 
         t0 = self.g_function(r0, k[0], k[1], k[2], k[3])
         t1 = self.g_function(r1, k[4], k[5], k[6], k[7])
-        print("t0: " + hex(t0) + " t1: " + hex(t1))
+        # print("t0: " + hex(t0) + " t1: " + hex(t1))
 
         k89 = int(format(k[8], '02x') + format(k[9], '02x'), 16)
         kab = int(format(k[10], '02x') + format(k[11], '02x'), 16)
@@ -69,7 +68,7 @@ class PSUCrypt:
 
     def round_function(self, r, round):
         f = self.f_function(r[0], r[1], round)
-        print("f0: " + hex(f[0]) + " f1: " + hex(f[1]))
+        # print("f0: " + hex(f[0]) + " f1: " + hex(f[1]))
 
         new_r0 = r[2] ^ f[0]
         new_r1 = r[3] ^ f[1]
@@ -80,37 +79,37 @@ class PSUCrypt:
     def encrypt(self, pt_hex):
         r = self.whitening(pt_hex, self.original_key)
 
-        print("\n\n\nEncryption:")
+        # print("\n\n\nEncryption:")
         for i in range(0, 16):
-            print("Beginning of Round: " + str(i))
+            # print("Beginning of Round: " + str(i))
             r = self.round_function(r, i)
-            print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
-            print("End of Round: " + str(i))
-            print()
+            # print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
+            # print("End of Round: " + str(i))
+            # print()
 
         y = [r[2], r[3], r[0], r[1]]
         y_hex = ""
         for yi in y:
             y_hex += format(yi, "04x")
 
-        print("y_hex = " + y_hex)
+        # print("y_hex = " + y_hex)
         c = self.whitening(y_hex, self.original_key)
         c_str = ""
-        print("\n\nCiphertext: 0x", end = '')
+        # print("\n\nCiphertext: 0x", end = '')
         for ci in c:
             c_str += format(ci, "04x")
         #     print(format(ci, "04x"), end = '')
-        print(c_str)
+        # print(c_str)
         return c_str
 
     def decrypt(self, ct_hex):
         r = self.whitening(ct_hex, self.original_key)
         for i in range(15, -1, -1):
-            print("Beginning of Round: " + str(i))
+            # print("Beginning of Round: " + str(i))
             r = self.round_function(r, i)
-            print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
-            print("End of Round: " + str(i))
-            print()
+            # print("Block: " + hex(r[0]) + hex(r[1])[2:] + hex(r[2])[2:] + hex(r[3])[2:])
+            # print("End of Round: " + str(i))
+            # print()
 
         p = [r[2], r[3], r[0], r[1]]
         p_hex = ""
@@ -118,9 +117,9 @@ class PSUCrypt:
             p_hex += format(pi, "04x")
 
         p = self.whitening(p_hex, self.original_key)
-        print("\n\nPlaintext: 0x", end = '')
+        # print("\n\nPlaintext: 0x", end = '')
         p_str = ""
         for pi in p:
             p_str += format(pi, "04x")
-        print(p_str)
+        # print(p_str)
         return p_str

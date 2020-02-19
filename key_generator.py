@@ -1,3 +1,5 @@
+# Gennadii Sytov - CS485 - Winter2020 - Project 1 "PSU_CRYPT"
+
 class KeyGenerator:
 
     constant_64bit = pow(2, 63)

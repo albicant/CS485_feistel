@@ -1,10 +1,9 @@
+# Gennadii Sytov - CS485 - Winter2020 - Project 1 "PSU_CRYPT"
+
 import psu_crypt
 import key_generator as KG
 import sys
 
-
-
-# original_key = int(0xabcdef0123456789)
 
 def stringToHex(str):
     s_hex = []
@@ -15,24 +14,6 @@ def stringToHex(str):
     for h in s_hex:
         h_str += format(h, "02x")
     return h_str
-
-'''
-print()
-
-plain_text = "security"
-pt_hex = stringToHex(plain_text)
-
-key_generator = KG.KeyGenerator(original_key)
-
-psu_cr = psu_crypt.PSUCrypt(key_generator)
-cipher_hex = psu_cr.encrypt(pt_hex)
-
-
-print("DECRYPTION\n")
-print(pt_hex)
-print(cipher_hex)
-plain_text = psu_cr.decrypt(cipher_hex)
-'''
 
 def getKeyFromFile(key_file):
     try:
@@ -70,8 +51,6 @@ def getSrcFromFile(src_file, mode):
             if mode == "-e":
                 c = format(ord(c), "02x")
                 counter += 1
-            # else:
-            #     c = format(int(c, 16), "1x")
             counter += 1
             hex_strings[i] += c
 
@@ -98,17 +77,14 @@ def saveResultsToFile(dest_file, results, mode):
                     if(counter == 2):
                         value = int(char_tup, 16)
                         if value != 0:
-                            char_tup = chr(value) # change it to 2 chars
-                            # print(char_tup)
+                            char_tup = chr(value) 
                             file.write(char_tup)
                         counter = 0
                         char_tup = ""
 
 
 def main():
-    # key.txt source.txt destination.txt -e or -d
     argv = sys.argv[1:]
-    # print(len(argv))
     if len(argv) < 4:
         print("Missing command line arguments!")
         return
@@ -125,9 +101,7 @@ def main():
         return
 
     key = getKeyFromFile(key_file)
-    print(key)
     src = getSrcFromFile(src_file, mode)
-    print(src)
 
     key_gen = KG.KeyGenerator(key)
     cipher = psu_crypt.PSUCrypt(key_gen)
@@ -139,8 +113,15 @@ def main():
         else:
             results.append(cipher.decrypt(s))
 
-    print(results)
+    # print(results)
     saveResultsToFile(dest_file, results, mode)
+
+    process = ""
+    if mode == "-e":
+        process = "encryption"
+    else:
+        process = "decryption"
+    print("The " + process + " has finished successfully. The result has been saved to the \"" + dest_file + "\" file.")
 
 
 if __name__ == '__main__':
