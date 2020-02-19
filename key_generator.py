@@ -3,7 +3,7 @@ class KeyGenerator:
     constant_64bit = pow(2, 63)
 
     def __init__(self, key):
-        self.original_key = key
+        self.original_key = int(key, 16)
         self.keys = self.generateKeys(self.original_key)
 
     def getKeys(self):
